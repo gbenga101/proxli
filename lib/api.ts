@@ -93,3 +93,120 @@ export function loginAdmin(input: { email: string; password: string }): Promise<
 export function logoutAdmin(): Promise<{ message: string }> {
   return request('/api/admin/logout', { method: 'POST' })
 }
+
+// -----------------------------
+// Categories — /api/categories
+// -----------------------------
+
+export interface Category {
+  id: string
+  name: string
+  slug: string
+}
+
+export function getCategories(): Promise<Category[]> {
+  return request<Category[]>('/api/categories', { method: 'GET' })
+}
+
+// -----------------------------
+// Provider profiles — /api/providers/*
+// -----------------------------
+
+export type ResponseChannel = 'whatsapp' | 'call' | 'both'
+export type VerificationStatus = 'pending' | 'verified' | 'rejected'
+
+export interface ProviderCategoryLink {
+  id: string
+  provider_profile_id: string
+  category_id: string
+  created_at: string
+  category: Category
+}
+
+export interface ProviderProfile {
+  id: string
+  user_id: string
+  profile_photo: string | null
+  whatsapp_number: string | null
+  phone_number: string | null
+  bio: string | null
+  years_of_experience: number | null
+  price_range: string | null
+  location_area: string
+  response_channel: ResponseChannel
+  verification_status: VerificationStatus
+  is_admin_created: boolean
+  created_at: string
+  updated_at: string
+  categories?: ProviderCategoryLink[]
+}
+
+export interface PublicProviderProfile extends ProviderProfile {
+  full_name: string
+  average_rating: number | null
+  review_count: number
+}
+
+export interface EditRequest {
+  id: string
+  provider_profile_id: string
+  field_name: 'profile_photo' | 'phone_number' | 'whatsapp_number' | 'location_area'
+  old_value: string | null
+  new_value: string
+  status: 'pending' | 'approved' | 'rejected'
+  admin_note: string | null
+  created_at: string
+  reviewed_at: string | null
+}
+
+export function createProviderProfile(input: {
+  whatsapp_number: string
+  phone_number?: string
+  bio?: string
+  years_of_experience?: number
+  price_range?: string
+  location_area: string
+  response_channel: ResponseChannel
+}): Promise<ProviderProfile> {
+  return request<ProviderProfile>('/api/providers/profile', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  })
+}
+
+export function getMyProviderProfile(): Promise<ProviderProfile> {
+  return request<ProviderProfile>('/api/providers/me', { method: 'GET' })
+}
+
+export function getPublicProviderProfile(id: string): Promise<PublicProviderProfile> {
+  return request<PublicProviderProfile>(`/api/providers/${id}`, { method: 'GET' })
+}
+
+export function updateFreeFields(input: {
+  bio?: string
+  price_range?: string
+  years_of_experience?: number
+  response_channel?: ResponseChannel
+}): Promise<ProviderProfile> {
+  return request<ProviderProfile>('/api/providers/me/free-fields', {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  })
+}
+
+export function submitEditRequest(input: {
+  field_name: 'profile_photo' | 'phone_number' | 'whatsapp_number' | 'location_area'
+  new_value: string
+}): Promise<EditRequest> {
+  return request<EditRequest>('/api/providers/me/edit-request', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  })
+}
+
+export function assignCategories(category_ids: string[]): Promise<ProviderCategoryLink[]> {
+  return request<ProviderCategoryLink[]>('/api/providers/me/categories', {
+    method: 'POST',
+    body: JSON.stringify({ category_ids }),
+  })
+}
