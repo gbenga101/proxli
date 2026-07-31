@@ -196,6 +196,35 @@ export function getPublicProviderProfile(id: string): Promise<PublicProviderProf
   return request<PublicProviderProfile>(`/api/providers/${id}`, { method: 'GET' })
 }
 
+export interface SearchProvidersParams {
+  category?: string
+  location?: string
+  verified?: boolean
+  response_channel?: ResponseChannel
+  min_rating?: number
+  price_range?: string
+}
+
+export function searchProviders(
+  params: SearchProvidersParams = {}
+): Promise<PublicProviderProfile[]> {
+  const query = new URLSearchParams()
+
+  if (params.category) query.set('category', params.category)
+  if (params.location) query.set('location', params.location)
+  if (params.verified !== undefined) query.set('verified', String(params.verified))
+  if (params.response_channel) query.set('response_channel', params.response_channel)
+  if (params.min_rating !== undefined) query.set('min_rating', String(params.min_rating))
+  if (params.price_range) query.set('price_range', params.price_range)
+
+  const queryString = query.toString()
+
+  return request<PublicProviderProfile[]>(
+    `/api/providers/search${queryString ? `?${queryString}` : ''}`,
+    { method: 'GET' }
+  )
+}
+
 export function updateFreeFields(input: {
   bio?: string
   price_range?: string
