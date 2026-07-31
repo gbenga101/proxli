@@ -29,13 +29,14 @@ export class ApiError extends Error {
 }
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const isFormData = options.body instanceof FormData
+
   const res = await fetch(`${API_URL}${path}`, {
     ...options,
     credentials: 'include', // required for HTTP-only cookies — see servifind-stack.md
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers || {}),
-    },
+    headers: isFormData
+      ? { ...(options.headers || {}) }
+      : { 'Content-Type': 'application/json', ...(options.headers || {}) },
   })
 
   const data = await res.json().catch(() => ({}))
@@ -167,10 +168,23 @@ export function createProviderProfile(input: {
   price_range?: string
   location_area: string
   response_channel: ResponseChannel
+  profile_photo?: File
 }): Promise<ProviderProfile> {
+  const formData = new FormData()
+  formData.append('whatsapp_number', input.whatsapp_number)
+  if (input.phone_number) formData.append('phone_number', input.phone_number)
+  if (input.bio) formData.append('bio', input.bio)
+  if (input.years_of_experience !== undefined) {
+    formData.append('years_of_experience', String(input.years_of_experience))
+  }
+  if (input.price_range) formData.append('price_range', input.price_range)
+  formData.append('location_area', input.location_area)
+  formData.append('response_channel', input.response_channel)
+  if (input.profile_photo) formData.append('profile_photo', input.profile_photo)
+
   return request<ProviderProfile>('/api/providers/profile', {
     method: 'POST',
-    body: JSON.stringify(input),
+    body: formData,
   })
 }
 
@@ -196,11 +210,17 @@ export function updateFreeFields(input: {
 
 export function submitEditRequest(input: {
   field_name: 'profile_photo' | 'phone_number' | 'whatsapp_number' | 'location_area'
-  new_value: string
+  new_value?: string
+  photo?: File
 }): Promise<EditRequest> {
+  const formData = new FormData()
+  formData.append('field_name', input.field_name)
+  if (input.new_value) formData.append('new_value', input.new_value)
+  if (input.photo) formData.append('profile_photo', input.photo)
+
   return request<EditRequest>('/api/providers/me/edit-request', {
     method: 'POST',
-    body: JSON.stringify(input),
+    body: formData,
   })
 }
 

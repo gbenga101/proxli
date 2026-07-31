@@ -32,7 +32,7 @@ const STATUS_LABEL: Record<string, string> = {
 }
 
 const EDIT_REQUEST_FIELDS = [
-    { value: 'profile_photo', label: 'Profile photo (link/reference for now)' },
+    { value: 'profile_photo', label: 'Profile photo' },
     { value: 'phone_number', label: 'Phone number' },
     { value: 'whatsapp_number', label: 'WhatsApp number' },
     { value: 'location_area', label: 'Location area' },
@@ -158,6 +158,7 @@ function CreateProfileForm({
     const [locationArea, setLocationArea] = useState('')
     const [responseChannel, setResponseChannel] = useState<ResponseChannel>('whatsapp')
     const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([])
+    const [photoFile, setPhotoFile] = useState<File | null>(null)
     const [error, setError] = useState<string | null>(null)
     const [submitting, setSubmitting] = useState(false)
 
@@ -183,6 +184,7 @@ function CreateProfileForm({
                 price_range: priceRange || undefined,
                 location_area: locationArea,
                 response_channel: responseChannel,
+                profile_photo: photoFile || undefined,
             })
 
             if (selectedCategoryIds.length > 0) {
@@ -217,6 +219,19 @@ function CreateProfileForm({
                         {error}
                     </div>
                 )}
+
+                <div>
+                    <label className="block text-sm font-medium text-text-primary mb-1">
+                        Profile photo <span className="text-text-secondary font-normal">(optional)</span>
+                    </label>
+                    <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={(e) => setPhotoFile(e.target.files?.[0] || null)}
+                        className="w-full text-sm text-text-secondary file:mr-3 file:rounded-lg file:border-0 file:bg-secondary file:text-white file:px-3 file:py-2 file:text-sm file:font-medium"
+                    />
+                    <p className="mt-1 text-xs text-text-secondary">JPEG, PNG, or WebP. Max 2MB.</p>
+                </div>
 
                 <div>
                     <label className="block text-sm font-medium text-text-primary mb-1">
@@ -590,10 +605,12 @@ function EditRequestForm({ profile }: { profile: ProviderProfile }) {
         'phone_number'
     )
     const [newValue, setNewValue] = useState('')
+    const [photoFile, setPhotoFile] = useState<File | null>(null)
     const [submitting, setSubmitting] = useState(false)
     const [message, setMessage] = useState<string | null>(null)
 
     const currentValue = (profile as unknown as Record<string, string | null>)[fieldName]
+    const isPhotoField = fieldName === 'profile_photo'
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
@@ -601,9 +618,14 @@ function EditRequestForm({ profile }: { profile: ProviderProfile }) {
         setMessage(null)
 
         try {
-            await submitEditRequest({ field_name: fieldName, new_value: newValue })
+            await submitEditRequest(
+                isPhotoField
+                    ? { field_name: fieldName, photo: photoFile || undefined }
+                    : { field_name: fieldName, new_value: newValue }
+            )
             setMessage('Submitted for admin review. It will apply once approved.')
             setNewValue('')
+            setPhotoFile(null)
         } catch (err) {
             setMessage(err instanceof ApiError ? err.message : 'Something went wrong.')
         } finally {
@@ -637,21 +659,35 @@ function EditRequestForm({ profile }: { profile: ProviderProfile }) {
                             </option>
                         ))}
                     </select>
-                    {currentValue && (
+                    {currentValue && !isPhotoField && (
                         <p className="mt-1 text-xs text-text-secondary">Current: {currentValue}</p>
                     )}
                 </div>
 
-                <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">New value</label>
-                    <input
-                        type="text"
-                        required
-                        value={newValue}
-                        onChange={(e) => setNewValue(e.target.value)}
-                        className="w-full rounded-lg border border-border px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                    />
-                </div>
+                {isPhotoField ? (
+                    <div>
+                        <label className="block text-sm font-medium text-text-primary mb-1">New photo</label>
+                        <input
+                            type="file"
+                            required
+                            accept="image/jpeg,image/png,image/webp"
+                            onChange={(e) => setPhotoFile(e.target.files?.[0] || null)}
+                            className="w-full text-sm text-text-secondary file:mr-3 file:rounded-lg file:border-0 file:bg-primary file:text-white file:px-3 file:py-2 file:text-sm file:font-medium"
+                        />
+                        <p className="mt-1 text-xs text-text-secondary">JPEG, PNG, or WebP. Max 2MB.</p>
+                    </div>
+                ) : (
+                    <div>
+                        <label className="block text-sm font-medium text-text-primary mb-1">New value</label>
+                        <input
+                            type="text"
+                            required
+                            value={newValue}
+                            onChange={(e) => setNewValue(e.target.value)}
+                            className="w-full rounded-lg border border-border px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                        />
+                    </div>
+                )}
 
                 <button
                     type="submit"

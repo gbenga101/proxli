@@ -81,12 +81,22 @@ export default function ProviderPublicProfilePage() {
             <div className="max-w-3xl mx-auto px-4 py-8">
                 <div className="bg-white border border-border rounded-xl p-6 shadow-sm">
                     <div className="flex items-start justify-between gap-4 flex-wrap">
-                        <div>
-                            <h1 className="font-heading text-h3 text-text-primary">{profile.full_name}</h1>
-                            <p className="text-text-secondary text-sm mt-1">{profile.location_area}</p>
-                            <p className="text-text-secondary text-sm">
-                                {profile.categories?.map((c) => c.category.name).join(', ') || 'No categories listed'}
-                            </p>
+                        <div className="flex items-start gap-4">
+                            {profile.profile_photo && (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                    src={profile.profile_photo}
+                                    alt={profile.full_name}
+                                    className="w-16 h-16 rounded-full object-cover border border-border"
+                                />
+                            )}
+                            <div>
+                                <h1 className="font-heading text-h3 text-text-primary">{profile.full_name}</h1>
+                                <p className="text-text-secondary text-sm mt-1">{profile.location_area}</p>
+                                <p className="text-text-secondary text-sm">
+                                    {profile.categories?.map((c) => c.category.name).join(', ') || 'No categories listed'}
+                                </p>
+                            </div>
                         </div>
                         <span
                             className={`text-xs font-semibold px-3 py-1.5 rounded-full border ${STATUS_STYLES[profile.verification_status]}`}
