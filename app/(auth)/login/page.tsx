@@ -1,12 +1,29 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { Suspense, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { loginUser, ApiError } from '@/lib/api'
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginPageFallback />}>
+      <LoginPageContent />
+    </Suspense>
+  )
+}
+
+function LoginPageFallback() {
+  return (
+    <main className="min-h-screen flex items-center justify-center bg-surface px-4 py-12">
+      <p className="text-text-secondary text-sm">Loading…</p>
+    </main>
+  )
+}
+
+function LoginPageContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -19,6 +36,16 @@ export default function LoginPage() {
 
     try {
       const user = await loginUser({ email, password })
+
+      // Per user-flows.md Flow 1: a guest who clicked "Login to contact" or
+      // "Log in" from a provider profile should return there, not their
+      // dashboard. Only honored if it's a relative path — guards against an
+      // arbitrary external URL being passed via the query string.
+      const redirect = searchParams.get('redirect')
+      if (redirect && redirect.startsWith('/')) {
+        router.push(redirect)
+        return
+      }
 
       // A user can hold both roles (see Users/User Roles schema). Per Flow 3c,
       // a provider who is also a customer still lands on their provider

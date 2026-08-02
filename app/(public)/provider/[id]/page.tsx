@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
     getPublicProviderProfile,
@@ -34,6 +34,7 @@ function digitsOnly(value: string) {
 
 export default function ProviderPublicProfilePage() {
     const params = useParams<{ id: string }>()
+    const router = useRouter()
     const [profile, setProfile] = useState<PublicProviderProfile | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -169,10 +170,26 @@ export default function ProviderPublicProfilePage() {
     return (
         <main className="min-h-screen bg-surface">
             <header className="bg-white border-b border-border">
-                <div className="max-w-3xl mx-auto px-4 h-16 flex items-center">
-                    <Link href="/" className="font-heading text-h5 text-text-primary">
-                        Proxli
-                    </Link>
+                <div className="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => router.back()}
+                            className="text-text-secondary hover:text-text-primary text-sm font-medium"
+                        >
+                            ← Back
+                        </button>
+                        <Link href="/" className="font-heading text-h5 text-text-primary">
+                            Proxli
+                        </Link>
+                    </div>
+                    {currentUser && (
+                        <Link
+                            href={currentUser.roles.includes('provider') ? '/dashboard/provider' : '/dashboard/customer'}
+                            className="text-primary hover:text-primary-hover text-sm font-medium"
+                        >
+                            My Dashboard
+                        </Link>
+                    )}
                 </div>
             </header>
 
@@ -238,7 +255,7 @@ export default function ProviderPublicProfilePage() {
                         )}
                         {!isAuthenticated && (
                             <Link
-                                href="/login"
+                                href={`/login?redirect=${encodeURIComponent(`/provider/${params.id}`)}`}
                                 className="bg-text-primary hover:opacity-90 text-white font-medium rounded-lg px-4 py-2.5 transition-opacity"
                             >
                                 Login to contact this provider
@@ -300,7 +317,10 @@ export default function ProviderPublicProfilePage() {
 
                     {!isAuthenticated && (
                         <p className="text-text-secondary text-sm mb-6 pb-6 border-b border-border">
-                            <Link href="/login" className="text-primary hover:text-primary-hover font-medium">
+                            <Link
+                                href={`/login?redirect=${encodeURIComponent(`/provider/${params.id}`)}`}
+                                className="text-primary hover:text-primary-hover font-medium"
+                            >
                                 Log in
                             </Link>{' '}
                             to leave a review.
