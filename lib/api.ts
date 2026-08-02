@@ -277,6 +277,32 @@ export interface Review {
   updated_at: string
 }
 
+export interface ProviderReview extends Review {
+  reviewer: { full_name: string }
+}
+
+export function getProviderReviews(providerId: string): Promise<ProviderReview[]> {
+  return request<ProviderReview[]>(`/api/reviews/provider/${providerId}`, { method: 'GET' })
+}
+
+export function submitReview(input: {
+  provider_profile_id: string
+  rating: number
+  comment?: string
+}): Promise<Review> {
+  return request<Review>('/api/reviews', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  })
+}
+
+export function flagReview(id: string, reason: string): Promise<Review> {
+  return request<Review>(`/api/reviews/${id}/flag`, {
+    method: 'POST',
+    body: JSON.stringify({ reason }),
+  })
+}
+
 // -----------------------------
 // Admin — /api/admin/*
 // -----------------------------
