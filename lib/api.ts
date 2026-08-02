@@ -259,3 +259,157 @@ export function assignCategories(category_ids: string[]): Promise<ProviderCatego
     body: JSON.stringify({ category_ids }),
   })
 }
+
+// -----------------------------
+// Reviews — /api/reviews
+// -----------------------------
+
+export interface Review {
+  id: string
+  provider_profile_id: string
+  reviewer_id: string
+  rating: number
+  comment: string | null
+  is_flagged: boolean
+  flag_reason: string | null
+  is_deleted: boolean
+  created_at: string
+  updated_at: string
+}
+
+// -----------------------------
+// Admin — /api/admin/*
+// -----------------------------
+
+export interface AdminProviderProfile extends ProviderProfile {
+  rejection_reason: string | null
+  user: {
+    full_name: string
+    email: string
+    is_active: boolean
+  }
+}
+
+export interface AdminCustomer {
+  id: string
+  full_name: string
+  email: string
+  phone_number: string | null
+  is_active: boolean
+  created_at: string
+  roles: { role: Role }[]
+}
+
+export interface AdminEditRequest extends EditRequest {
+  provider_profile: {
+    id: string
+    user: { full_name: string }
+  }
+}
+
+export interface AdminReview extends Review {
+  reviewer: { full_name: string; email: string }
+  provider_profile: { id: string; user: { full_name: string } }
+}
+
+export interface PlatformStats {
+  total_providers: number
+  total_customers: number
+  total_reviews: number
+}
+
+export function getStats(): Promise<PlatformStats> {
+  return request<PlatformStats>('/api/admin/stats', { method: 'GET' })
+}
+
+export function listAdminProviders(): Promise<AdminProviderProfile[]> {
+  return request<AdminProviderProfile[]>('/api/admin/providers', { method: 'GET' })
+}
+
+export function verifyProvider(id: string): Promise<AdminProviderProfile> {
+  return request<AdminProviderProfile>(`/api/admin/providers/${id}/verify`, { method: 'PATCH' })
+}
+
+export function rejectProvider(id: string, reason: string): Promise<AdminProviderProfile> {
+  return request<AdminProviderProfile>(`/api/admin/providers/${id}/reject`, {
+    method: 'PATCH',
+    body: JSON.stringify({ reason }),
+  })
+}
+
+export function suspendProvider(
+  id: string
+): Promise<{ provider_profile_id: string; user_id: string; is_active: boolean }> {
+  return request(`/api/admin/providers/${id}/suspend`, { method: 'PATCH' })
+}
+
+export function reactivateProvider(
+  id: string
+): Promise<{ provider_profile_id: string; user_id: string; is_active: boolean }> {
+  return request(`/api/admin/providers/${id}/reactivate`, { method: 'PATCH' })
+}
+
+export function deleteProvider(id: string): Promise<{ message: string }> {
+  return request(`/api/admin/providers/${id}`, { method: 'DELETE' })
+}
+
+export function createProviderByAdmin(input: {
+  full_name: string
+  email: string
+  password: string
+  user_phone_number?: string
+  whatsapp_number: string
+  phone_number?: string
+  bio?: string
+  years_of_experience?: number
+  price_range?: string
+  location_area: string
+  response_channel: ResponseChannel
+  category_ids: string[]
+}): Promise<AdminProviderProfile> {
+  return request<AdminProviderProfile>('/api/admin/providers', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  })
+}
+
+export function listEditRequests(): Promise<AdminEditRequest[]> {
+  return request<AdminEditRequest[]>('/api/admin/edit-requests', { method: 'GET' })
+}
+
+export function reviewEditRequest(
+  id: string,
+  action: 'approve' | 'reject',
+  admin_note?: string
+): Promise<EditRequest> {
+  return request<EditRequest>(`/api/admin/edit-requests/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ action, admin_note }),
+  })
+}
+
+export function listAdminCustomers(): Promise<AdminCustomer[]> {
+  return request<AdminCustomer[]>('/api/admin/customers', { method: 'GET' })
+}
+
+export function suspendCustomer(id: string): Promise<{ id: string; is_active: boolean }> {
+  return request(`/api/admin/customers/${id}/suspend`, { method: 'PATCH' })
+}
+
+export function reactivateCustomer(id: string): Promise<{ id: string; is_active: boolean }> {
+  return request(`/api/admin/customers/${id}/reactivate`, { method: 'PATCH' })
+}
+
+export function deleteCustomer(
+  id: string
+): Promise<{ message: string; user_id: string; account_deactivated: boolean }> {
+  return request(`/api/admin/customers/${id}`, { method: 'DELETE' })
+}
+
+export function listAdminReviews(): Promise<AdminReview[]> {
+  return request<AdminReview[]>('/api/admin/reviews', { method: 'GET' })
+}
+
+export function deleteReview(id: string): Promise<Review> {
+  return request<Review>(`/api/admin/reviews/${id}`, { method: 'DELETE' })
+}

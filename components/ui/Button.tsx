@@ -1,6 +1,6 @@
 type ButtonProps = {
   children: React.ReactNode
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost'
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger'
   size?: 'sm' | 'md' | 'lg'
   onClick?: () => void
   type?: 'button' | 'submit' | 'reset'
@@ -24,6 +24,7 @@ export default function Button({
     secondary: 'bg-(--color-secondary) text-white',
     outline: 'border-2 border-(--color-primary) text-(--color-primary) hover:bg-(--color-primary) hover:text-white',
     ghost: 'text-(--color-primary) hover:bg-(--color-primary)/10',
+    danger: 'bg-(--color-error) hover:opacity-90 text-white',
   }
 
   const sizes = {
