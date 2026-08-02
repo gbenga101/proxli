@@ -1,8 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-if (!API_URL) {
-  throw new Error('NEXT_PUBLIC_API_URL is not set in .env.local')
-}
+const API_URL = process.env.NEXT_PUBLIC_API_URL || ''
 
 export type Role = 'customer' | 'provider'
 
@@ -29,6 +25,9 @@ export class ApiError extends Error {
 }
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  if (!API_URL) {
+    throw new Error('NEXT_PUBLIC_API_URL is not set in environment variables')
+  }
   const isFormData = options.body instanceof FormData
 
   const res = await fetch(`${API_URL}${path}`, {
