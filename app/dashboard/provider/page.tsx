@@ -12,9 +12,11 @@ import {
     updateFreeFields,
     submitEditRequest,
     assignCategories,
+    getProviderReviews,
     AuthUser,
     Category,
     ProviderProfile,
+    ProviderReview,
     ResponseChannel,
     ApiError,
 } from '@/lib/api'
@@ -376,6 +378,16 @@ function ProviderDashboardContent({
     categories: Category[]
     onProfileUpdate: (profile: ProviderProfile) => void
 }) {
+    const [reviews, setReviews] = useState<ProviderReview[]>([])
+    const [reviewsLoading, setReviewsLoading] = useState(true)
+
+    useEffect(() => {
+        getProviderReviews(profile.id)
+            .then(setReviews)
+            .catch(() => setReviews([]))
+            .finally(() => setReviewsLoading(false))
+    }, [profile.id])
+
     return (
         <div className="space-y-6">
             <div className="bg-white border border-border rounded-xl p-6 shadow-sm">
@@ -405,6 +417,44 @@ function ProviderDashboardContent({
             <FreeFieldsForm profile={profile} onUpdate={onProfileUpdate} />
             <CategoriesForm profile={profile} categories={categories} onUpdate={onProfileUpdate} />
             <EditRequestForm profile={profile} />
+
+            {/* Reviews received — read-only view, no submit or flag actions */}
+            <div className="bg-white border border-border rounded-xl p-6 shadow-sm">
+                <h2 className="font-heading text-h5 text-text-primary mb-1">Your reviews</h2>
+                <p className="text-text-secondary text-sm mb-4">
+                    Reviews customers have left on your profile.
+                </p>
+                {reviewsLoading ? (
+                    <p className="text-text-secondary text-sm">Loading reviews…</p>
+                ) : reviews.length === 0 ? (
+                    <p className="text-text-secondary text-sm">No reviews yet.</p>
+                ) : (
+                    <div className="flex flex-col divide-y divide-border">
+                        {reviews.map((r) => (
+                            <div key={r.id} className="py-4 first:pt-0 last:pb-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <span className="font-medium text-text-primary text-sm">
+                                        {r.reviewer.full_name}
+                                    </span>
+                                    <span className="text-accent text-sm" aria-label={`${r.rating} out of 5 stars`}>
+                                        {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
+                                    </span>
+                                </div>
+                                {r.comment && (
+                                    <p className="text-text-secondary text-sm">{r.comment}</p>
+                                )}
+                                <p className="text-xs text-text-secondary mt-1">
+                                    {new Date(r.created_at).toLocaleDateString('en-GB', {
+                                        day: 'numeric',
+                                        month: 'short',
+                                        year: 'numeric',
+                                    })}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
         </div>
     )
 }
