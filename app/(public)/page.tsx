@@ -57,7 +57,7 @@ export default function LandingPage() {
             <section className="bg-surface border-b border-border">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-16 pb-14 sm:pb-20 text-center">
                     <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary bg-primary/10 px-3.5 py-1.5 rounded-full mb-6 max-w-full truncate">
-                        ✨ Now live in Badagry &middot; Abeokuta coming soon
+                        Now live in Badagry &middot; Abeokuta coming soon
                     </span>
                     <h1 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-extrabold tracking-tight text-text-primary mb-4 leading-[1.2]">
                         The technician near you, <br className="hidden sm:inline" />
