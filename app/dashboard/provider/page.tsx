@@ -95,16 +95,16 @@ export default function ProviderDashboardPage() {
         <div className="min-h-screen bg-surface">
             <header className="bg-white border-b border-border sticky top-0 z-10">
                 <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-                    <Link href="/" className="font-heading text-h5 text-text-primary font-bold">
+                    <Link href="/" className="font-heading text-xl text-text-primary font-extrabold">
                         Proxli
                     </Link>
-                    <div className="flex items-center gap-4">
-                        <span className="text-xs bg-secondary/10 text-secondary font-medium px-2.5 py-1 rounded-full border border-secondary/20">
+                    <div className="flex items-center gap-3">
+                        <span className="text-xs bg-secondary/10 text-secondary font-semibold px-2.5 py-1 rounded-full border border-secondary/20">
                             Provider Account
                         </span>
                         <button
                             onClick={handleLogout}
-                            className="text-sm text-text-secondary hover:text-error transition-colors font-medium"
+                            className="min-h-[44px] min-w-[44px] flex items-center justify-center text-sm text-text-secondary hover:text-error transition-colors font-semibold px-2"
                         >
                             Log out
                         </button>
@@ -112,9 +112,9 @@ export default function ProviderDashboardPage() {
                 </div>
             </header>
 
-            <main className="max-w-4xl mx-auto px-4 py-8">
+            <main className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
                 {view === 'error' && (
-                    <div className="bg-white border border-border rounded-xl p-6 text-center text-text-secondary">
+                    <div className="bg-white border border-border rounded-2xl p-6 text-center text-text-secondary">
                         Something went wrong loading your profile. Please refresh the page.
                     </div>
                 )}
@@ -193,8 +193,7 @@ function CreateProfileForm({
                 try {
                     await assignCategories(selectedCategoryIds)
                 } catch {
-                    // Profile was created successfully even if this step fails — the
-                    // dashboard's category section below lets them retry.
+                    // Profile was created successfully even if this step fails
                 }
             }
 
@@ -207,8 +206,8 @@ function CreateProfileForm({
     }
 
     return (
-        <div className="bg-white border border-border rounded-xl p-6 shadow-sm">
-            <h1 className="font-heading text-h3 text-text-primary mb-1">
+        <div className="bg-white border border-border rounded-3xl p-6 sm:p-8 shadow-2xs">
+            <h1 className="font-heading text-2xl font-bold text-text-primary mb-1">
                 Welcome, {fullName}!
             </h1>
             <p className="text-text-secondary text-sm mb-6">
@@ -217,26 +216,26 @@ function CreateProfileForm({
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 {error && (
-                    <div className="bg-error/10 border border-error/20 text-error text-sm rounded-lg px-3 py-2">
+                    <div className="bg-error/10 border border-error/20 text-error text-sm rounded-xl px-4 py-3 font-medium">
                         {error}
                     </div>
                 )}
 
                 <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">
                         Profile photo <span className="text-text-secondary font-normal">(optional)</span>
                     </label>
                     <input
                         type="file"
                         accept="image/jpeg,image/png,image/webp"
                         onChange={(e) => setPhotoFile(e.target.files?.[0] || null)}
-                        className="w-full text-sm text-text-secondary file:mr-3 file:rounded-lg file:border-0 file:bg-secondary file:text-white file:px-3 file:py-2 file:text-sm file:font-medium"
+                        className="w-full text-sm text-text-secondary file:mr-3 file:rounded-xl file:border-0 file:bg-secondary file:text-white file:px-4 file:py-2.5 file:text-sm file:font-semibold"
                     />
                     <p className="mt-1 text-xs text-text-secondary">JPEG, PNG, or WebP. Max 2MB.</p>
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">
                         WhatsApp number
                     </label>
                     <input
@@ -245,36 +244,36 @@ function CreateProfileForm({
                         value={whatsappNumber}
                         onChange={(e) => setWhatsappNumber(e.target.value)}
                         placeholder="234801234xxxx"
-                        className="w-full rounded-lg border border-border px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary"
+                        className="w-full min-h-[48px] rounded-xl border border-border px-4 py-3 text-base text-text-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary"
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">
                         Phone number <span className="text-text-secondary font-normal">(optional)</span>
                     </label>
                     <input
                         type="tel"
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
-                        className="w-full rounded-lg border border-border px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary"
+                        className="w-full min-h-[48px] rounded-xl border border-border px-4 py-3 text-base text-text-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary"
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">Location area</label>
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">Location area</label>
                     <input
                         type="text"
                         required
                         value={locationArea}
                         onChange={(e) => setLocationArea(e.target.value)}
                         placeholder="e.g. Surulere, Lagos"
-                        className="w-full rounded-lg border border-border px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary"
+                        className="w-full min-h-[48px] rounded-xl border border-border px-4 py-3 text-base text-text-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary"
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">
                         Bio <span className="text-text-secondary font-normal">(optional)</span>
                     </label>
                     <textarea
@@ -282,13 +281,13 @@ function CreateProfileForm({
                         onChange={(e) => setBio(e.target.value)}
                         rows={3}
                         placeholder="e.g. I fix phones, 5 years experience"
-                        className="w-full rounded-lg border border-border px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary"
+                        className="w-full rounded-2xl border border-border px-4 py-3 text-base text-text-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary"
                     />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-text-primary mb-1">
+                        <label className="block text-sm font-semibold text-text-primary mb-1.5">
                             Years of experience <span className="text-text-secondary font-normal">(optional)</span>
                         </label>
                         <input
@@ -296,11 +295,11 @@ function CreateProfileForm({
                             min={0}
                             value={yearsOfExperience}
                             onChange={(e) => setYearsOfExperience(e.target.value)}
-                            className="w-full rounded-lg border border-border px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary"
+                            className="w-full min-h-[48px] rounded-xl border border-border px-4 py-3 text-base text-text-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary"
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-text-primary mb-1">
+                        <label className="block text-sm font-semibold text-text-primary mb-1.5">
                             Price range <span className="text-text-secondary font-normal">(optional)</span>
                         </label>
                         <input
@@ -308,19 +307,19 @@ function CreateProfileForm({
                             value={priceRange}
                             onChange={(e) => setPriceRange(e.target.value)}
                             placeholder="2,000 - 5,000"
-                            className="w-full rounded-lg border border-border px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary"
+                            className="w-full min-h-[48px] rounded-xl border border-border px-4 py-3 text-base text-text-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary"
                         />
                     </div>
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">
+                    <label className="block text-sm font-semibold text-text-primary mb-1.5">
                         Response channel
                     </label>
                     <select
                         value={responseChannel}
                         onChange={(e) => setResponseChannel(e.target.value as ResponseChannel)}
-                        className="w-full rounded-lg border border-border px-3 py-2 text-text-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary"
+                        className="w-full min-h-[48px] rounded-xl border border-border px-4 py-3 text-base text-text-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary bg-white"
                     >
                         <option value="whatsapp">WhatsApp only</option>
                         <option value="call">Call only</option>
@@ -329,24 +328,26 @@ function CreateProfileForm({
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-text-primary mb-2">
+                    <label className="block text-sm font-semibold text-text-primary mb-2">
                         Categories <span className="text-text-secondary font-normal">(choose up to 3)</span>
                     </label>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         {categories.map((cat) => {
                             const checked = selectedCategoryIds.includes(cat.id)
                             const disabled = !checked && selectedCategoryIds.length >= 3
                             return (
                                 <label
                                     key={cat.id}
-                                    className={`flex items-center gap-2 text-sm border rounded-lg px-3 py-2 cursor-pointer ${checked ? 'border-secondary bg-secondary/5' : 'border-border'
-                                        } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    className={`min-h-[44px] flex items-center gap-3 text-sm font-medium border rounded-xl px-4 py-2.5 cursor-pointer transition-colors ${
+                                        checked ? 'border-secondary bg-secondary/5 text-secondary font-semibold' : 'border-border text-text-primary'
+                                    } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
                                     <input
                                         type="checkbox"
                                         checked={checked}
                                         disabled={disabled}
                                         onChange={() => toggleCategory(cat.id)}
+                                        className="w-4 h-4 accent-secondary rounded cursor-pointer"
                                     />
                                     {cat.name}
                                 </label>
@@ -358,7 +359,7 @@ function CreateProfileForm({
                 <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full bg-secondary hover:bg-secondary/90 disabled:opacity-60 text-white font-medium rounded-lg px-4 py-2.5 transition-colors"
+                    className="w-full min-h-[48px] bg-secondary hover:bg-secondary/90 disabled:opacity-60 text-white font-semibold text-base rounded-2xl px-6 py-3 transition-colors shadow-2xs active:scale-[0.98]"
                 >
                     {submitting ? 'Creating profile…' : 'Create profile'}
                 </button>
@@ -390,10 +391,10 @@ function ProviderDashboardContent({
 
     return (
         <div className="space-y-6">
-            <div className="bg-white border border-border rounded-xl p-6 shadow-sm">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="bg-white border border-border rounded-3xl p-6 sm:p-8 shadow-2xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h1 className="font-heading text-h3 text-text-primary mb-1">
+                        <h1 className="font-heading text-2xl font-bold text-text-primary mb-1">
                             Welcome, {user?.full_name}!
                         </h1>
                         <p className="text-text-secondary text-sm">
@@ -408,7 +409,7 @@ function ProviderDashboardContent({
                 </div>
                 <Link
                     href={`/provider/${profile.id}`}
-                    className="inline-block mt-4 text-sm text-primary hover:text-primary-hover font-medium"
+                    className="inline-flex items-center gap-1 min-h-[44px] mt-2 text-sm text-primary hover:text-primary-hover font-semibold hover:underline"
                 >
                     View public profile →
                 </Link>
@@ -418,9 +419,9 @@ function ProviderDashboardContent({
             <CategoriesForm profile={profile} categories={categories} onUpdate={onProfileUpdate} />
             <EditRequestForm profile={profile} />
 
-            {/* Reviews received — read-only view, no submit or flag actions */}
-            <div className="bg-white border border-border rounded-xl p-6 shadow-sm">
-                <h2 className="font-heading text-h5 text-text-primary mb-1">Your reviews</h2>
+            {/* Reviews received */}
+            <div className="bg-white border border-border rounded-3xl p-6 sm:p-8 shadow-2xs">
+                <h2 className="font-heading text-xl font-bold text-text-primary mb-1">Your reviews</h2>
                 <p className="text-text-secondary text-sm mb-4">
                     Reviews customers have left on your profile.
                 </p>
@@ -433,7 +434,7 @@ function ProviderDashboardContent({
                         {reviews.map((r) => (
                             <div key={r.id} className="py-4 first:pt-0 last:pb-0">
                                 <div className="flex items-center gap-2 mb-1">
-                                    <span className="font-medium text-text-primary text-sm">
+                                    <span className="font-bold text-text-primary text-sm">
                                         {r.reviewer.full_name}
                                     </span>
                                     <span className="text-accent text-sm" aria-label={`${r.rating} out of 5 stars`}>
@@ -458,6 +459,7 @@ function ProviderDashboardContent({
         </div>
     )
 }
+
 
 function FreeFieldsForm({
     profile,

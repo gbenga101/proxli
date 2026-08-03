@@ -70,48 +70,49 @@ export default function AdminDashboardPage() {
 
     return (
         <div className="min-h-screen bg-surface">
-            <header className="bg-text-primary text-white border-b border-gray-800 sticky top-0 z-10">
+            <header className="bg-text-primary text-white border-b border-gray-800 sticky top-0 z-20">
                 <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <Link href="/" className="font-heading text-h5 font-bold text-white">
+                        <Link href="/" className="font-heading text-xl font-extrabold text-white">
                             Proxli
                         </Link>
-                        <span className="text-xs uppercase tracking-wider bg-gray-800 text-gray-300 px-2.5 py-0.5 rounded font-mono">
+                        <span className="text-xs uppercase tracking-wider bg-gray-800 text-gray-300 px-2.5 py-0.5 rounded-full font-mono font-semibold">
                             Admin Console
                         </span>
                     </div>
                     <button
                         onClick={handleAdminLogout}
                         disabled={loading}
-                        className="text-sm text-gray-300 hover:text-white transition-colors font-medium"
+                        className="min-h-[44px] min-w-[44px] flex items-center justify-center text-sm text-gray-300 hover:text-white transition-colors font-semibold"
                     >
                         {loading ? 'Logging out…' : 'Log out'}
                     </button>
                 </div>
             </header>
 
-            <main className="max-w-6xl mx-auto px-4 py-8">
-                <div className="bg-white border border-border rounded-xl p-6 mb-8 shadow-sm">
-                    <h1 className="font-heading text-h3 text-text-primary mb-1">
+            <main className="max-w-6xl mx-auto px-4 py-6 sm:py-8">
+                <div className="bg-white border border-border rounded-3xl p-6 sm:p-8 mb-6 sm:mb-8 shadow-2xs">
+                    <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-text-primary mb-1">
                         Platform Management
                     </h1>
-                    <p className="text-text-secondary text-sm">
+                    <p className="text-text-secondary text-xs sm:text-sm">
                         Approve providers, manage customers, moderate reviews, and monitor edit requests.
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
                     <StatCard label="Providers" value={stats?.total_providers} sublabel="Total registered" />
                     <StatCard label="Customers" value={stats?.total_customers} sublabel="Registered accounts" />
                     <StatCard label="Reviews" value={stats?.total_reviews} sublabel="Submitted on platform" />
                 </div>
 
-                <div className="flex gap-1 border-b border-border mb-6">
+                {/* Mobile horizontal scroll tab bar */}
+                <div className="flex gap-2 border-b border-border mb-6 overflow-x-auto pb-0.5">
                     {TABS.map((tab) => (
                         <button
                             key={tab.key}
                             onClick={() => setActiveTab(tab.key)}
-                            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors duration-200 ${
+                            className={`min-h-[44px] px-4 py-2.5 text-sm font-semibold border-b-2 shrink-0 transition-colors duration-200 ${
                                 activeTab === tab.key
                                     ? 'border-primary text-primary'
                                     : 'border-transparent text-text-secondary hover:text-text-primary'
@@ -130,6 +131,7 @@ export default function AdminDashboardPage() {
         </div>
     )
 }
+
 
 // -----------------------------
 // Shared small pieces
